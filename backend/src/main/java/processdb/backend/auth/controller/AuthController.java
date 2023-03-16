@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import processdb.backend.auth.controller.requests.LoginRequest;
 import processdb.backend.auth.controller.requests.RegistrationRequest;
+import processdb.backend.auth.jwt.JWTHandler;
 import processdb.backend.users.User;
 import processdb.backend.users.UserRepository;
 
@@ -19,12 +20,15 @@ public class AuthController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    JWTHandler jwtHandler;
+
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
 
         User user = new User(request.getUsername(), request.getPassword());
         userRepository.save(user);
-        return ResponseEntity.ok("TODO: Registration JWT token");
+        return ResponseEntity.ok(jwtHandler.generateToken(user));
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -32,6 +36,10 @@ public class AuthController {
 
         User user = userRepository.findByUsername(request.getUsername());
         boolean isValidLogin = user.matchesCredentials(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(String.format("TODO: Login is valid: %s", isValidLogin));
+
+        if (isValidLogin)
+            return ResponseEntity.ok(jwtHandler.generateToken(user));
+        else
+            return ResponseEntity.badRequest().build();
     }
 }
