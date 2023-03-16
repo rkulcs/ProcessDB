@@ -11,7 +11,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    
+
     private String username;
 
     private String password;
@@ -48,5 +48,9 @@ public class User {
 
     public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
+    }
+
+    public boolean matchesCredentials(String username, String rawPassword) {
+        return (this.username.equals(username) && PASSWORD_ENCODER.matches(rawPassword, getPassword()));
     }
 }

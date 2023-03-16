@@ -30,6 +30,8 @@ public class AuthController {
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
 
-        return ResponseEntity.ok("TODO: Login");
+        User user = userRepository.findByUsername(request.getUsername());
+        boolean isValidLogin = user.matchesCredentials(request.getUsername(), request.getPassword());
+        return ResponseEntity.ok(String.format("TODO: Login is valid: %s", isValidLogin));
     }
 }
