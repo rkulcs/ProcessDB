@@ -8,8 +8,10 @@ import processdb.backend.users.User;
 
 import java.util.Date;
 
-@Component
+@Component("jwtHandler")
 public class JWTHandler {
+
+    private static final String TOKEN_PREFIX = "Bearer ";
 
     @Value("${app.jwt.secret}")
     private String secret;
@@ -25,5 +27,16 @@ public class JWTHandler {
                 .setExpiration(new Date((new Date()).getTime() + expirationInMillis))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
+    }
+
+    public boolean isValidToken(String auth) {
+
+        try {
+            String token = auth.split(TOKEN_PREFIX)[1];
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
