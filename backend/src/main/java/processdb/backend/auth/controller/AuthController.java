@@ -26,9 +26,16 @@ public class AuthController {
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
 
-        User user = new User(request.getUsername(), request.getPassword());
-        userRepository.save(user);
-        return ResponseEntity.ok(jwtHandler.generateToken(user));
+        if (request.getPassword() == null || !request.getPassword().equals(request.getPasswordConfirmation()))
+            return ResponseEntity.badRequest().body("Password confirmation does not match password.");
+
+        try {
+            User user = new User(request.getUsername(), request.getPassword());
+            userRepository.save(user);
+            return ResponseEntity.ok(jwtHandler.generateToken(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to register user.");
+        }
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -40,6 +47,6 @@ public class AuthController {
         if (isValidLogin)
             return ResponseEntity.ok(jwtHandler.generateToken(user));
         else
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Failed to log in.");
     }
 }
