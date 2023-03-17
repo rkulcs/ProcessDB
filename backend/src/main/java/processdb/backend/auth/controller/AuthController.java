@@ -18,10 +18,10 @@ import processdb.backend.users.UserRepository;
 public class AuthController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    JWTHandler jwtHandler;
+    private JWTHandler jwtHandler;
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
