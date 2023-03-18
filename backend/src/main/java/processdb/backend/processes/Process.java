@@ -52,11 +52,11 @@ public class Process implements Serializable {
         this.filename = filename;
     }
 
-    public String getOs() {
+    public String getOS() {
         return os;
     }
 
-    public void setOs(String os) {
+    public void setOS(String os) {
         this.os = os;
     }
 

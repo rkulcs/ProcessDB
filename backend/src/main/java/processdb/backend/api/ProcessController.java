@@ -1,13 +1,16 @@
 package processdb.backend.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import processdb.backend.auth.jwt.JWTHandler;
+import processdb.backend.processes.Process;
 import processdb.backend.processes.ProcessRepository;
 
 @RestController
@@ -20,6 +23,9 @@ public class ProcessController {
     @Autowired
     private JWTHandler jwtHandler;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAll() {
         return ResponseEntity.ok(processRepository.findAll().toString());
@@ -29,17 +35,27 @@ public class ProcessController {
     public ResponseEntity<String> findById(@PathVariable String id) {
 
         try {
-            return ResponseEntity.ok(processRepository.findById(Long.parseLong(id)).toString());
+            String processJSON = objectMapper.writeValueAsString(processRepository.findById(Long.parseLong(id)));
+            return ResponseEntity.ok(processJSON);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid process ID.");
         } catch (NullPointerException e) {
             return ResponseEntity.badRequest().body("Process not found.");
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.internalServerError().body("An error occurred while retrieving the requested process.");
         }
     }
 
     @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
-    @PostMapping("/{id}/add")
-    public ResponseEntity<String> addProcess(HttpServletRequest request, @PathVariable String id) {
-        return ResponseEntity.ok("TODO");
+    @PostMapping("/add")
+    public ResponseEntity<String> addProcess(HttpServletRequest request, @RequestBody String processJSON) {
+
+        try {
+            Process process = objectMapper.readValue(processJSON, Process.class);
+            processRepository.save(process);
+            return ResponseEntity.ok("Process added to database.");
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body("Invalid process entry.");
+        }
     }
 }
