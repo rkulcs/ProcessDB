@@ -75,4 +75,16 @@ public class ProcessController {
             return ResponseEntity.badRequest().body("Invalid process details.");
         }
     }
+
+    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<String> deleteProcess(@PathVariable String id, HttpServletRequest request) {
+
+        try {
+            processRepository.deleteById(Long.parseLong(id));
+            return ResponseEntity.ok("Process deleted.");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid process ID.");
+        }
+    }
 }

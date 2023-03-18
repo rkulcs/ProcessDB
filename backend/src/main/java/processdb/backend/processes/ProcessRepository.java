@@ -11,4 +11,6 @@ public interface ProcessRepository extends Repository<Process, Long> {
     Process save(Process process);
 
     Process findById(Long id);
+
+    void deleteById(Long id);
 }
