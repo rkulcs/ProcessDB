@@ -67,4 +67,12 @@ public class Process implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void copyNonIdFieldsOf(Process process) {
+
+        this.name = process.name;
+        this.filename = process.filename;
+        this.os = process.os;
+        this.description = process.description;
+    }
 }

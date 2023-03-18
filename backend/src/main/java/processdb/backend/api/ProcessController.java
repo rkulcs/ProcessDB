@@ -1,7 +1,6 @@
 package processdb.backend.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +55,24 @@ public class ProcessController {
             return ResponseEntity.ok("Process added to database.");
         } catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().body("Invalid process entry.");
+        }
+    }
+
+    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @PostMapping("/{id}/update")
+    public ResponseEntity<String> updateProcess(@PathVariable String id, HttpServletRequest request,
+                                                @RequestBody String processJSON) {
+
+        try {
+            Process process = processRepository.findById(Long.parseLong(id));
+            Process updatedProcess = objectMapper.readValue(processJSON, Process.class);
+            process.copyNonIdFieldsOf(updatedProcess);
+            processRepository.save(process);
+            return ResponseEntity.ok("Process updated in database.");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid process ID.");
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body("Invalid process details.");
         }
     }
 }
