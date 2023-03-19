@@ -33,6 +33,8 @@ public class AuthControllerTests {
     @Autowired
     private AuthController controller;
 
+    //=== Registration Tests ===//
+
     @Test
     public void successfulRegistrationShouldReturnOk() throws Exception {
 
@@ -66,11 +68,66 @@ public class AuthControllerTests {
 
         String body = "{\"username\": \"user\", \"password\": \"user\", \"passwordConfirmation\": \"user\"}";
 
+        // Save user in DB
         User user = new User("user", "user");
         userRepository.save(user);
 
+        // Attempt to register as user with same credentials as previously saved user
         mockMVC.perform(
                         post("/auth/register")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    //=== Login Tests ===//
+
+    @Test
+    public void successfulLoginShouldReturnOk() throws Exception {
+
+        String body = "{\"username\": \"bob\", \"password\": \"bob\"}";
+
+        User user = new User("bob", "bob");
+        userRepository.save(user);
+
+        // Attempt to log in as a user that is saved in the database
+        mockMVC.perform(
+                        post("/auth/login")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void loginAsNonexistentUserShouldReturnError() throws Exception {
+
+        String body = "{\"username\": \"nonexistent\", \"password\": \"password\"}";
+
+        // Attempt to log in as a user that is saved in the database
+        mockMVC.perform(
+                        post("/auth/login")
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void loginWithInvalidPasswordShouldReturnError() throws Exception {
+
+        User user = new User("gene", "parmesan");
+        userRepository.save(user);
+
+        String body = "{\"username\": \"gene\", \"password\": \"gene\"}";
+
+        // Attempt to log in with a different password
+        mockMVC.perform(
+                        post("/auth/login")
                                 .content(body)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
