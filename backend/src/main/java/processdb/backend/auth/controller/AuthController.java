@@ -42,7 +42,8 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername());
-        boolean isValidLogin = user.matchesCredentials(request.getUsername(), request.getPassword());
+        boolean isValidLogin = (user == null) ? false
+                                              :user.matchesCredentials(request.getUsername(), request.getPassword());
 
         if (isValidLogin)
             return ResponseEntity.ok(jwtHandler.generateToken(user));
