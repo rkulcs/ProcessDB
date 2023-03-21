@@ -26,8 +26,10 @@ public class ProcessController {
     private ObjectMapper objectMapper;
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getAll() {
-        return ResponseEntity.ok(processRepository.findAll().toString());
+    public ResponseEntity<String> getAll() throws JsonProcessingException {
+
+        String processesJSON = objectMapper.writeValueAsString(processRepository.findAll());
+        return ResponseEntity.ok(processesJSON);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
