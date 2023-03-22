@@ -28,6 +28,15 @@ public class Process implements Serializable {
 
     private String description;
 
+    public Process() {}
+
+    public Process(String name, String filename, String os) {
+
+        this.name = name;
+        this.filename = filename;
+        this.os = os;
+    }
+
     public Long getId() {
         return id;
     }

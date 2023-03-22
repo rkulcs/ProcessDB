@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 import processdb.backend.auth.jwt.JWTHandler;
 import processdb.backend.processes.Process;
@@ -36,7 +37,13 @@ public class ProcessController {
     public ResponseEntity<String> findById(@PathVariable String id) {
 
         try {
-            String processJSON = objectMapper.writeValueAsString(processRepository.findById(Long.parseLong(id)));
+            Process process = processRepository.findById(Long.parseLong(id));
+
+            if (process == null)
+                return ResponseEntity.badRequest().body("Process not found.");
+
+            String processJSON = objectMapper.writeValueAsString(process);
+
             return ResponseEntity.ok(processJSON);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid process ID.");
@@ -55,7 +62,7 @@ public class ProcessController {
             Process process = objectMapper.readValue(processJSON, Process.class);
             processRepository.save(process);
             return ResponseEntity.ok("Process added to database.");
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | TransactionSystemException e) {
             return ResponseEntity.badRequest().body("Invalid process entry.");
         }
     }
@@ -73,7 +80,7 @@ public class ProcessController {
             return ResponseEntity.ok("Process updated in database.");
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid process ID.");
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | TransactionSystemException e) {
             return ResponseEntity.badRequest().body("Invalid process details.");
         }
     }
@@ -83,7 +90,13 @@ public class ProcessController {
     public ResponseEntity<String> deleteProcess(@PathVariable String id, HttpServletRequest request) {
 
         try {
-            processRepository.deleteById(Long.parseLong(id));
+            long processID = Long.parseLong(id);
+            Process process = processRepository.findById(processID);
+
+            if (process == null)
+                return ResponseEntity.badRequest().body("Invalid process ID.");
+
+            processRepository.deleteById(processID);
             return ResponseEntity.ok("Process deleted.");
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid process ID.");
