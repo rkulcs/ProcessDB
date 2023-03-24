@@ -1,0 +1,54 @@
+@charset "utf-8";
+@import "../../../node_modules/bulma/bulma.sass";
+
+.navbar {
+    color: #CAF0F8;
+    background-color: #0077B6;
+
+    .navbar-brand {
+        &:hover {
+            background-color: #03045E;
+        }
+
+        a {
+            color: #03045E;
+
+            &:hover {
+                color: #CAF0F8;
+            }
+        }
+    }
+
+    .navbar-item {
+        color: #CAF0F8;
+
+        &:hover {
+            color: #0077B6;
+            background-color: #CAF0F8;
+        }
+    }
+
+    .navbar-button-group {
+        &:hover {
+            background-color: #0077B6;
+        }
+    }
+
+    .button.is-primary {
+        color: #03045E;
+        background-color: #90E0EF;
+
+        &:hover {
+            background-color: #00B4D8;
+        }
+    }
+    
+    .button.is-light {
+        color: #03045E;
+        background-color: #CAF0F8;
+
+        &:hover {
+            background-color: #90E0EF;
+        }
+    }
+}
