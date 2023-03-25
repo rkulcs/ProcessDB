@@ -8,6 +8,7 @@ import ProcessView from '../views/ProcessView.vue'
 import UserLogin from '../components/UserLogin.vue'
 import UserRegistration from '../components/UserRegistration.vue'
 import ProcessList from '../components/ProcessList.vue'
+import ProcessInfo from '../components/ProcessInfo.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
           path: '',
           name: 'process_list',
           component: ProcessList
+        },
+        {
+          path: ':id',
+          name: 'process_info',
+          component: ProcessInfo
         }
       ]
     }

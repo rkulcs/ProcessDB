@@ -1,9 +1,11 @@
 <template>
   <h1 class="title">Processes</h1>
-  <div class="container is-fluid" v-for="p in store.processes">
-    <div class="notification is-primary">
-      {{ p.name }} | {{ p.filename }} ({{ p.os }})
-    </div>
+  <div class="container is-fluid" v-for="process in store.processes">
+    <RouterLink :to="`/processes/${ process.id }`">
+      <div class="notification is-primary">
+        {{ process.name }} | {{ process.filename }} ({{ process.os }})
+      </div>
+    </RouterLink>
   </div>
 </template>
 

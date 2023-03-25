@@ -24,4 +24,14 @@ export class Process {
         jsonObject.description
       )
   }
+
+  copyJsonValues(jsonObject) {
+    this.id = jsonObject.id
+    this.name = jsonObject.name
+    this.filename = jsonObject.filename
+    this.os = jsonObject.os
+    this.description = jsonObject.description
+  }
 }
+
+export default Process
