@@ -16,12 +16,12 @@
     <div class="navbar-end">
       <div class="navbar-item navbar-button-group">
         <div class="buttons">
-          <a class="button is-primary">
+          <RouterLink class="button is-primary" to="/user/register">
             Sign Up
-          </a>
-          <a class="button is-light">
+          </RouterLink>
+          <RouterLink class="button is-light" to="/user/login">
             <strong>Log In</strong>
-          </a>
+          </RouterLink>
         </div>
       </div>
     </div>
