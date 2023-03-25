@@ -3,9 +3,11 @@ import UserFormType from '../entities/UserFormType.js'
 
 import HomeView from '../views/HomeView.vue'
 import UserFormView from '../views/UserFormView.vue'
+import ProcessView from '../views/ProcessView.vue'
 
 import UserLogin from '../components/UserLogin.vue'
 import UserRegistration from '../components/UserRegistration.vue'
+import ProcessList from '../components/ProcessList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,18 @@ const router = createRouter({
           name: 'user_registration',
           props: {'type': UserFormType.REGISTRATION},
           component: UserRegistration
+        }
+      ]
+    },
+    {
+      path: '/processes',
+      name: 'processes',
+      component: ProcessView,
+      children: [
+        {
+          path: '',
+          name: 'process_list',
+          component: ProcessList
         }
       ]
     }

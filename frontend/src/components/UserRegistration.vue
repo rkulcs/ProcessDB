@@ -17,7 +17,7 @@ export default {
         method: 'POST',
         url: `${import.meta.env.VITE_BACKEND_URL}/auth/register`,
         headers: {
-          'Content-type': 'application/json',
+          'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
         data: formData

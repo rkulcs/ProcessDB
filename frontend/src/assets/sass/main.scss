@@ -1,6 +1,10 @@
 @charset "utf-8";
 @import "../../../node_modules/bulma/bulma.sass";
 
+html {
+    background-color: #CAF0F8;
+}
+
 .navbar {
     color: #CAF0F8;
     background-color: #0077B6;
@@ -50,5 +54,14 @@
         &:hover {
             background-color: #90E0EF;
         }
+    }
+}
+
+.container {
+    margin-top: 1%;
+    
+
+    .is-primary {
+        background-color: #00B4D8;
     }
 }

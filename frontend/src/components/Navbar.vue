@@ -8,9 +8,9 @@
 
   <div class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item">
+      <RouterLink class="navbar-item" to="/processes">
         Processes
-      </a>
+      </RouterLink>
     </div>
 
     <div class="navbar-end">
