@@ -12,4 +12,19 @@ export class User {
   static emptyUser() {
     return new User('', '', '')
   }
+
+  static emptyLogin() {
+    return {
+      username: '',
+      password: ''
+    }
+  }
+
+  static emptyRegistration() {
+    return {
+      username: '',
+      password: '',
+      passwordConfirmation: ''
+    }
+  }
 }
