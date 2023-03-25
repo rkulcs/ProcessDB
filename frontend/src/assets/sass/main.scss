@@ -5,6 +5,11 @@ html {
     background-color: #CAF0F8;
 }
 
+.title {
+    text-align: center;
+    margin-top: 1%;
+}
+
 .navbar {
     color: #CAF0F8;
     background-color: #0077B6;
@@ -64,4 +69,9 @@ html {
     .is-primary {
         background-color: #00B4D8;
     }
+}
+
+.field {
+    margin-left: 32px;
+    margin-right: 32px;
 }

@@ -1,5 +1,5 @@
 <template>
-  <h1>{{ isRegistration() ? 'Sign Up' : 'Log In' }}</h1>
+  <h1 class="title">{{ isRegistration() ? 'Sign Up' : 'Log In' }}</h1>
   <div class="field">
     <label class="label">Username</label>
     <div class="control">
