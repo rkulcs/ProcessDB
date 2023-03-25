@@ -3,10 +3,7 @@ package processdb.backend.auth.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import processdb.backend.auth.controller.requests.LoginRequest;
 import processdb.backend.auth.controller.requests.RegistrationRequest;
 import processdb.backend.auth.jwt.JWTHandler;
@@ -15,6 +12,7 @@ import processdb.backend.users.UserRepository;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired

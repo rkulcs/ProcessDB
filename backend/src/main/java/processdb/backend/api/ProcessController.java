@@ -15,6 +15,7 @@ import processdb.backend.processes.ProcessRepository;
 
 @RestController
 @RequestMapping("/processes")
+@CrossOrigin("*")
 public class ProcessController {
 
     @Autowired
