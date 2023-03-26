@@ -24,12 +24,52 @@ export const processStore = defineStore('processes', {
       })()
     },
     get(id) {
-      return toRaw(this.processes.filter(p => p.id === id)[0])
+      return (async () => {
+        let processJson = await axios({
+          method: 'GET',
+          url: `${import.meta.env.VITE_BACKEND_URL}/processes/${id}`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        })
+        .then(response => response.data)
+
+        let process = Process.emptyProcess()
+        process.copyJsonValues(processJson)
+
+        return process
+      })()
+    },
+    add(process) {
+      return axios({
+        method: 'POST',
+        url: `${import.meta.env.VITE_BACKEND_URL}/processes/add`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        data: process
+      })
+      .then(true)
+      .catch(false)
+    },
+    edit(process) {
+      return axios({
+        method: 'POST',
+        url: `${import.meta.env.VITE_BACKEND_URL}/processes/${process.id}/update`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        data: process
+      })
+      .then(true)
+      .catch(false)
     }
   },
-},
-{
-  persist: true
 }
 )
 
