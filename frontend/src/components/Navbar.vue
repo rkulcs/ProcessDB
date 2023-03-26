@@ -13,7 +13,17 @@
       </RouterLink>
     </div>
 
-    <div class="navbar-end">
+    <div class="navbar-end" v-if="isUserLoggedIn">
+      <div class="navbar-item">{{ user }}</div>
+      <div class="navbar-item navbar-button-group">
+        <div class="buttons">
+          <button class="button is-light" @click="logout">
+            <strong>Log Out</strong>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="navbar-end" v-else>
       <div class="navbar-item navbar-button-group">
         <div class="buttons">
           <RouterLink class="button is-primary" to="/user/register">
@@ -30,6 +40,19 @@
 </template>
 
 <script>
+export default {
+  props: ['isUserLoggedIn', 'user'],
+
+  methods: {
+    logout() {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+
+      this.$emit('logout')
+      this.$router.push({ name: 'home' })
+    }
+  }
+}
 </script>
 
 <style>

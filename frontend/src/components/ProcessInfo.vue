@@ -9,8 +9,8 @@
         <br>
         <div class="notification is-white">
           {{ 
-            (process.description === null) ? 'No description available.' 
-                                          : process.description 
+            (process.description === '') ? 'No description available.' 
+                                         : process.description 
           }}
         </div>
         <RouterLink class="button is-link" :to="`/processes/${ id }/edit`">
