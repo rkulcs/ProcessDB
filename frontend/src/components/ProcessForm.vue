@@ -29,6 +29,9 @@
       <button class="button is-link" @click="save">
         {{ isNew() ? 'Add' : 'Update' }}
       </button>
+      <button class="button is-link back-button" @click="save">
+        Back
+      </button>
     </div>
   </div>
 </template>
@@ -67,3 +70,6 @@ export default {
   }
 }
 </script>
+
+<style>
+</style>

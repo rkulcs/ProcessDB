@@ -1,5 +1,8 @@
 <template>
   <h1 class="title">Processes</h1>
+  <RouterLink class="button is-link new-process-button" to="/processes/new">
+    New
+  </RouterLink>
   <div class="container is-fluid" v-for="process in store.processes">
     <RouterLink :to="`/processes/${ process.id }`">
       <div class="notification is-primary">

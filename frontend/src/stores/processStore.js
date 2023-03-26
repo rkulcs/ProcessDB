@@ -68,6 +68,19 @@ export const processStore = defineStore('processes', {
       })
       .then(true)
       .catch(false)
+    },
+    delete(process) {
+      return axios({
+        method: 'DELETE',
+        url: `${import.meta.env.VITE_BACKEND_URL}/processes/${process.id}/delete`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(true)
+      .catch(false)
     }
   },
 }
