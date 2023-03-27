@@ -13,17 +13,23 @@ export default {
 
   methods: {
     register(formData) {
-      axios({
-        method: 'POST',
-        url: `${import.meta.env.VITE_BACKEND_URL}/auth/register`,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        data: formData
-      }).then(response => localStorage.setItem('token', response.data))
+      (async () => {
+        await axios({
+          method: 'POST',
+          url: `${import.meta.env.VITE_BACKEND_URL}/auth/register`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          },
+          data: formData
+        }).then(response => {
+          localStorage.setItem('token', response.data)
+          localStorage.setItem('user', formData.username)
+        })
 
-      this.$router.push({ name: 'home' })
+        this.$emit('login')
+        this.$router.push({ name: 'home' })
+      })()
     }
   }
 }
