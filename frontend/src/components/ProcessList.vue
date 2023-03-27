@@ -1,6 +1,10 @@
 <template>
   <h1 class="title">Processes</h1>
-  <RouterLink class="button is-link new-process-button" to="/processes/new">
+  <RouterLink 
+    class="button is-link new-process-button" 
+    to="/processes/new"
+    v-if="isUserLoggedIn"
+  >
     New
   </RouterLink>
   <div class="container is-fluid" v-for="process in store.processes">
@@ -16,6 +20,10 @@
 import processStore from '../stores/processStore.js'
 
 export default {
+  props: {
+    isUserLoggedIn: Boolean
+  },
+
   data() {
     return {
       store: processStore()

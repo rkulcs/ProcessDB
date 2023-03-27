@@ -13,12 +13,14 @@
                                          : process.description 
           }}
         </div>
-        <RouterLink class="button is-link" :to="`/processes/${ id }/edit`">
-          Edit
-        </RouterLink>
-        <button class="button is-link back-button" @click="deleteProcess">
-          Delete
-        </button>
+        <div v-if="isUserLoggedIn">
+          <RouterLink class="button is-link" :to="`/processes/${ id }/edit`">
+            Edit
+          </RouterLink>
+          <button class="button is-link back-button" @click="deleteProcess">
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -29,6 +31,10 @@ import processStore from '../stores/processStore.js'
 import Process from '../entities/Process.js'
 
 export default {
+  props: {
+    isUserLoggedIn: Boolean
+  },
+
   data() {
     return {
       id: this.$route.params.id,

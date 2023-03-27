@@ -43,7 +43,7 @@ import processStore from '../stores/processStore'
 
 export default {
   props: {
-    type: ProcessFormType
+    type: ProcessFormType,
   },
 
   data() {

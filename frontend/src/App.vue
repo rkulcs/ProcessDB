@@ -9,7 +9,10 @@ import Navbar from './components/Navbar.vue'
     :user="user"
     v-on:logout="onLogout()" 
   />
-  <RouterView v-on:login="onLogin()" />
+  <RouterView 
+    :isUserLoggedIn="isUserLoggedIn"
+    v-on:login="onLogin()" 
+  />
 </template>
 
 <script>
