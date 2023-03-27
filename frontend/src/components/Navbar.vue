@@ -42,7 +42,8 @@
 <script>
 export default {
   props: {
-    isUserLoggedIn: Boolean
+    isUserLoggedIn: Boolean,
+    user: String
   },
 
   methods: {

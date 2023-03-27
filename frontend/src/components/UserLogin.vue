@@ -1,5 +1,8 @@
 <template>
-  <UserForm v-on:formFilled="login($event)" />
+  <UserForm 
+    :errorMessage="errorMessage" 
+    v-on:formFilled="login($event)" 
+  />
 </template>
 
 <script>
@@ -9,6 +12,12 @@ import axios from 'axios'
 export default {
   components: {
     UserForm
+  },
+
+  data() {
+    return {
+      errorMessage: null
+    }
   },
 
   methods: {
@@ -25,10 +34,12 @@ export default {
         }).then(response => {
           localStorage.setItem('token', response.data)
           localStorage.setItem('user', formData.username)
-        })
 
-        this.$emit('login')
-        this.$router.push({ name: 'home' })
+          this.errorMessage = null
+          this.$emit('login')
+          this.$router.push({ name: 'home' })
+        })
+        .catch(error => this.errorMessage = error.response.data)
       })()
     }
   }

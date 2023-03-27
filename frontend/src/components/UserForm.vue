@@ -1,5 +1,10 @@
 <template>
   <h1 class="title">{{ isRegistration() ? 'Sign Up' : 'Log In' }}</h1>
+  <div class="container is-fluid" v-if="errorMessage">
+    <div class="notification is-danger">
+      {{ errorMessage }}
+    </div>
+  </div>
   <div class="field">
     <label class="label">Username</label>
     <div class="control">
@@ -33,7 +38,8 @@ import UserFormType from '../entities/UserFormType.js'
 
 export default {
   props: {
-    type: UserFormType
+    type: UserFormType,
+    errorMessage: String
   },
 
   data() {
