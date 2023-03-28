@@ -8,6 +8,7 @@
 <script>
 import UserForm from './UserForm.vue'
 import axios from 'axios'
+import UserUtils from '../util/UserUtils.js'
 
 export default {
   components: {
@@ -32,8 +33,7 @@ export default {
           },
           data: formData
         }).then(response => {
-          localStorage.setItem('token', response.data)
-          localStorage.setItem('user', formData.username)
+          UserUtils.setLoggedInUserAndToken(formData.username, response.data)
 
           this.errorMessage = null
           this.$emit('login')

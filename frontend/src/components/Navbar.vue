@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import UserUtils from '../util/UserUtils.js'
+
 export default {
   props: {
     isUserLoggedIn: Boolean,
@@ -48,8 +50,7 @@ export default {
 
   methods: {
     logout() {
-      localStorage.removeItem('user')
-      localStorage.removeItem('token')
+      UserUtils.clearUserDetails()
 
       this.$emit('logout')
       this.$router.push({ name: 'home' })

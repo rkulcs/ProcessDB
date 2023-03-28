@@ -16,17 +16,19 @@ import Navbar from './components/Navbar.vue'
 </template>
 
 <script>
+import UserUtils from './util/UserUtils.js'
+
 export default {
   data() {
     return {
-      isUserLoggedIn: (localStorage.getItem('token') !== null),
-      user: localStorage.getItem('user')
+      isUserLoggedIn: (UserUtils.getLoggedInUser() !== null),
+      user: UserUtils.getUserToken()
     }
   },
 
   methods: {
     onLogin() {
-      this.user = localStorage.getItem('user')
+      this.user = UserUtils.getLoggedInUser()
       this.isUserLoggedIn = true
     },
     onLogout() {
