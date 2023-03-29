@@ -21,6 +21,9 @@ public class User {
     @NotBlank
     private String password;
 
+    @NotNull
+    private Boolean isAdmin = false;
+
     public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     public User() {}
@@ -53,6 +56,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
+    }
+
+    public Boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 
     public boolean matchesCredentials(String username, String rawPassword) {

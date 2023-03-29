@@ -196,11 +196,12 @@ public class ProcessControllerTests {
     }
 
     @Test
-    public void deleteExistingProcessWithAuthShouldReturnOk() throws Exception {
+    public void deleteExistingProcessAsAdminWithAuthShouldReturnOk() throws Exception {
 
         Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
 
         String auth = mockAuthAndGenerateToken();
+        mockAdminAuth();
 
         mockMVC.perform(
                 delete(String.format("/processes/%d/delete", process.getId()))
@@ -210,9 +211,24 @@ public class ProcessControllerTests {
     }
 
     @Test
-    public void deleteNonexistentProcessWithAuthShouldReturnError() throws Exception {
+    public void deleteExistingProcessAsRegularUserWithAuthShouldReturnError() throws Exception {
+
+        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
 
         String auth = mockAuthAndGenerateToken();
+
+        mockMVC.perform(
+                        delete(String.format("/processes/%d/delete", process.getId()))
+                                .header(AUTH_HEADER, auth)
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void deleteNonexistentProcessAsAdminWithAuthShouldReturnError() throws Exception {
+
+        String auth = mockAuthAndGenerateToken();
+        mockAdminAuth();
 
         mockMVC.perform(
                         delete("/processes/12/delete")
@@ -226,5 +242,9 @@ public class ProcessControllerTests {
     private String mockAuthAndGenerateToken() {
         when(jwtHandler.isValidToken(String.format("Bearer %s", MOCK_TOKEN))).thenReturn(true);
         return String.format("Bearer %s", MOCK_TOKEN);
+    }
+
+    private void mockAdminAuth() {
+        when(jwtHandler.isValidAdminUser(String.format("Bearer %s", MOCK_TOKEN))).thenReturn(true);
     }
 }

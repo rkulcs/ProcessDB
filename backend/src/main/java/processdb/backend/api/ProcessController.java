@@ -86,7 +86,7 @@ public class ProcessController {
         }
     }
 
-    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @PreAuthorize("@jwtHandler.isValidAdminUser(#request.getHeader('Authorization'))")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteProcess(@PathVariable String id, HttpServletRequest request) {
 
