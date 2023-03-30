@@ -35,14 +35,20 @@ public class JWTHandler {
     }
 
     public boolean isValidAdminUser(String auth) {
+
         try {
-            String token = getTokenFromAuthHeader(auth);
-            String username = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-            User user = userRepository.findByUsername(username);
+            User user = getTokenUser(auth);
             return user.isAdmin();
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public User getTokenUser(String auth) {
+
+        String token = getTokenFromAuthHeader(auth);
+        String username = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        return userRepository.findByUsername(username);
     }
 
     public boolean isValidToken(String auth) {

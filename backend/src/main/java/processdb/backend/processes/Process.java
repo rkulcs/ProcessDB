@@ -3,6 +3,7 @@ package processdb.backend.processes;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import processdb.backend.users.User;
 
 import java.io.Serializable;
 
@@ -13,6 +14,9 @@ public class Process implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @ManyToOne
+    private User addedBy;
 
     @NotNull
     @NotBlank
@@ -30,11 +34,12 @@ public class Process implements Serializable {
 
     public Process() {}
 
-    public Process(String name, String filename, String os) {
+    public Process(String name, String filename, String os, User addedBy) {
 
         this.name = name;
         this.filename = filename;
         this.os = os;
+        this.addedBy = addedBy;
     }
 
     public Long getId() {
@@ -75,6 +80,14 @@ public class Process implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(User addedBy) {
+        this.addedBy = addedBy;
     }
 
     public void copyNonIdFieldsOf(Process process) {

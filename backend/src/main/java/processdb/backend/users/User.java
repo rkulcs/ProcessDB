@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import processdb.backend.processes.Process;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
@@ -23,6 +26,9 @@ public class User {
 
     @NotNull
     private Boolean isAdmin = false;
+
+    @OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL)
+    private List<Process> processesAdded;
 
     public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 

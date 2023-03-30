@@ -61,6 +61,7 @@ public class ProcessController {
 
         try {
             Process process = objectMapper.readValue(processJSON, Process.class);
+            process.setAddedBy(jwtHandler.getTokenUser(request.getHeader("Authorization")));
             processRepository.save(process);
             return ResponseEntity.ok("Process added to database.");
         } catch (JsonProcessingException | TransactionSystemException e) {
