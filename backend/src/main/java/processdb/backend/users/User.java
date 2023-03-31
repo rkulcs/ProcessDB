@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import processdb.backend.processes.Process;
+import processdb.backend.processes.ProcessComment;
 
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class User {
 
     @OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL)
     private List<Process> processesAdded;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<ProcessComment> processComments;
 
     public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import processdb.backend.users.User;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "processes")
@@ -32,14 +33,16 @@ public class Process implements Serializable {
 
     private String description;
 
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
+    private List<ProcessComment> comments;
+
     public Process() {}
 
-    public Process(String name, String filename, String os, User addedBy) {
+    public Process(String name, String filename, String os) {
 
         this.name = name;
         this.filename = filename;
         this.os = os;
-        this.addedBy = addedBy;
     }
 
     public Long getId() {
@@ -88,6 +91,14 @@ public class Process implements Serializable {
 
     public void setAddedBy(User addedBy) {
         this.addedBy = addedBy;
+    }
+
+    public List<ProcessComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<ProcessComment> comments) {
+        this.comments = comments;
     }
 
     public void copyNonIdFieldsOf(Process process) {
