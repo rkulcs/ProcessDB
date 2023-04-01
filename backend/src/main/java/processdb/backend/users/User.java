@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import processdb.backend.processes.Process;
+import processdb.backend.processes.ProcessComment;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
@@ -20,6 +24,15 @@ public class User {
     @NotNull
     @NotBlank
     private String password;
+
+    @NotNull
+    private Boolean isAdmin = false;
+
+    @OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL)
+    private List<Process> processesAdded;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<ProcessComment> processComments;
 
     public static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
@@ -53,6 +66,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
+    }
+
+    public Boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 
     public boolean matchesCredentials(String username, String rawPassword) {

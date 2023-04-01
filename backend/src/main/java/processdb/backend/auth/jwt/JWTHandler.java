@@ -2,9 +2,11 @@ package processdb.backend.auth.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import processdb.backend.users.User;
+import processdb.backend.users.UserRepository;
 
 import java.util.Date;
 
@@ -19,6 +21,9 @@ public class JWTHandler {
     @Value("${app.jwt.expirationInMillis}")
     private int expirationInMillis;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public String generateToken(User user) {
 
         return Jwts.builder()
@@ -29,14 +34,35 @@ public class JWTHandler {
                 .compact();
     }
 
+    public boolean isValidAdminUser(String auth) {
+
+        try {
+            User user = getTokenUser(auth);
+            return user.isAdmin();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public User getTokenUser(String auth) {
+
+        String token = getTokenFromAuthHeader(auth);
+        String username = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        return userRepository.findByUsername(username);
+    }
+
     public boolean isValidToken(String auth) {
 
         try {
-            String token = auth.split(TOKEN_PREFIX)[1];
+            String token = getTokenFromAuthHeader(auth);
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private String getTokenFromAuthHeader(String auth) {
+        return auth.split(TOKEN_PREFIX)[1];
     }
 }

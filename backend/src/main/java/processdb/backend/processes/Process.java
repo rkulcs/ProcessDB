@@ -3,8 +3,10 @@ package processdb.backend.processes;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import processdb.backend.users.User;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "processes")
@@ -13,6 +15,9 @@ public class Process implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @ManyToOne
+    private User addedBy;
 
     @NotNull
     @NotBlank
@@ -27,6 +32,9 @@ public class Process implements Serializable {
     private String os;
 
     private String description;
+
+    @OneToMany(mappedBy = "process", cascade = CascadeType.ALL)
+    private List<ProcessComment> comments;
 
     public Process() {}
 
@@ -75,6 +83,22 @@ public class Process implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(User addedBy) {
+        this.addedBy = addedBy;
+    }
+
+    public List<ProcessComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<ProcessComment> comments) {
+        this.comments = comments;
     }
 
     public void copyNonIdFieldsOf(Process process) {

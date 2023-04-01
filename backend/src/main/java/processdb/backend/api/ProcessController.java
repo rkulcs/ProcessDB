@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,7 +12,12 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 import processdb.backend.auth.jwt.JWTHandler;
 import processdb.backend.processes.Process;
+import processdb.backend.processes.ProcessComment;
+import processdb.backend.processes.ProcessCommentRepository;
 import processdb.backend.processes.ProcessRepository;
+import processdb.backend.users.User;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/processes")
@@ -22,10 +28,15 @@ public class ProcessController {
     private ProcessRepository processRepository;
 
     @Autowired
+    private ProcessCommentRepository commentRepository;
+
+    @Autowired
     private JWTHandler jwtHandler;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    //===== Processes =====//
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAll() throws JsonProcessingException {
@@ -61,6 +72,7 @@ public class ProcessController {
 
         try {
             Process process = objectMapper.readValue(processJSON, Process.class);
+            process.setAddedBy(getUser(request));
             processRepository.save(process);
             return ResponseEntity.ok("Process added to database.");
         } catch (JsonProcessingException | TransactionSystemException e) {
@@ -86,7 +98,7 @@ public class ProcessController {
         }
     }
 
-    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @PreAuthorize("@jwtHandler.isValidAdminUser(#request.getHeader('Authorization'))")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteProcess(@PathVariable String id, HttpServletRequest request) {
 
@@ -102,5 +114,70 @@ public class ProcessController {
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid process ID.");
         }
+    }
+
+    //===== Process Comments =====//
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<String> getProcessComments(@PathVariable String id, HttpServletRequest request) {
+
+        try {
+            Process process = processRepository.findById(Long.parseLong(id));
+            List<ProcessComment> comments = commentRepository.findAllByProcess(process);
+            String processesJSON = objectMapper.writeValueAsString(comments);
+            return ResponseEntity.ok(processesJSON);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid process ID.");
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.internalServerError().body("Failed to retrieve process comments.");
+        }
+    }
+
+    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @PostMapping("/{id}/comments/add")
+    public ResponseEntity<String> addComment(@PathVariable String id, HttpServletRequest request,
+                                             @RequestBody String commentJSON) {
+
+        try {
+            ProcessComment comment = objectMapper.readValue(commentJSON, ProcessComment.class);
+            comment.setAuthor(getUser(request));
+            comment.setProcess(processRepository.findById(Long.parseLong(id)));
+            commentRepository.save(comment);
+
+            return ResponseEntity.ok("Comment added.");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid process ID.");
+        } catch (JsonProcessingException | TransactionSystemException e) {
+            return ResponseEntity.badRequest().body("Invalid process comment.");
+        }
+    }
+
+    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @DeleteMapping("/{processId}/comments/{commentId}/delete")
+    public ResponseEntity<String> deleteComment(@PathVariable String processId, HttpServletRequest request,
+                                                @PathVariable String commentId) {
+
+        try {
+            ProcessComment comment = commentRepository.findById(Long.parseLong(commentId));
+            User author = comment.getAuthor();
+            User requestSender = getUser(request);
+
+            if (!author.getId().equals(requestSender.getId()) && !requestSender.isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this comment.");
+            }
+
+            commentRepository.deleteById(comment.getId());
+            return ResponseEntity.ok("Comment deleted.");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid process ID.");
+        } catch (TransactionSystemException e) {
+            return ResponseEntity.badRequest().body("Failed to delete the comment.");
+        }
+    }
+
+    //===== Helper Methods =====//
+
+    private User getUser(HttpServletRequest request) {
+        return  jwtHandler.getTokenUser(request.getHeader("Authorization"));
     }
 }
