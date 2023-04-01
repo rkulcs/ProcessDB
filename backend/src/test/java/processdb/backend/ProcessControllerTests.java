@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import processdb.backend.api.ProcessController;
 import processdb.backend.auth.jwt.JWTHandler;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ProcessControllerTests {
 
     private static final String MOCK_TOKEN = "TOKEN";
@@ -78,7 +80,7 @@ public class ProcessControllerTests {
     @Test
     public void getExistingProcessShouldReturnOk() throws Exception {
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
         mockMVC.perform(
                 get(String.format("/processes/%d", process.getId()))
                         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -150,7 +152,7 @@ public class ProcessControllerTests {
 
         String processJSON = "{\"name\": \"proc\", \"filename\": \"proc.exe\", \"os\": \"Windows\"}";
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
 
         mockMVC.perform(
                         post(String.format("/processes/%d/update", process.getId()))
@@ -165,7 +167,7 @@ public class ProcessControllerTests {
 
         String processJSON = "{\"name\": \"proc\", \"filename\": \"proc.exe\", \"os\": \"Windows\"}";
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
 
         String auth = mockAuthAndGenerateToken();
 
@@ -183,7 +185,7 @@ public class ProcessControllerTests {
 
         String processJSON = "{\"name\": \"proc\", \"filename\": \"\", \"os\": \"Windows\"}";
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
 
         String auth = mockAuthAndGenerateToken();
 
@@ -199,7 +201,7 @@ public class ProcessControllerTests {
     @Test
     public void deleteProcessWithoutAuthShouldReturnError() throws Exception {
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
 
         mockMVC.perform(delete(String.format("/processes/%d/delete", process.getId())))
                 .andExpect(status().isForbidden());
@@ -208,7 +210,7 @@ public class ProcessControllerTests {
     @Test
     public void deleteExistingProcessAsAdminWithAuthShouldReturnOk() throws Exception {
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
 
         String auth = mockAuthAndGenerateToken();
         mockAdminAuth();
@@ -223,7 +225,7 @@ public class ProcessControllerTests {
     @Test
     public void deleteExistingProcessAsRegularUserWithAuthShouldReturnError() throws Exception {
 
-        Process process = processRepository.save(new Process("test", "test.exe", "Windows"));
+        Process process = processRepository.save(createProcess());
 
         String auth = mockAuthAndGenerateToken();
 
