@@ -1,5 +1,6 @@
 package processdb.backend.processes;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import processdb.backend.users.User;
@@ -25,6 +26,12 @@ public class ProcessComment {
     private String info;
 
     public ProcessComment() {}
+
+    public ProcessComment(Boolean isSafe, String info) {
+
+        this.isSafe = isSafe;
+        this.info = info;
+    }
 
     public ProcessComment(Process process, Boolean isSafe, String info) {
 
@@ -71,5 +78,17 @@ public class ProcessComment {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    //===== Serialization Getters =====//
+
+    @JsonProperty("author")
+    public Long getAuthorId() {
+        return author.getId();
+    }
+
+    @JsonProperty("process")
+    public Long getProcessId() {
+        return process.getId();
     }
 }

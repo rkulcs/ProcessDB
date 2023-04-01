@@ -1,12 +1,17 @@
 package processdb.backend.processes;
 
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource
-public interface ProcessCommentRepository {
+import java.util.List;
 
-    ProcessComment save();
+@RepositoryRestResource
+public interface ProcessCommentRepository extends Repository<ProcessComment, Long> {
+
+    List<ProcessComment> findAllByProcess(Process process);
+
+    ProcessComment save(ProcessComment comment);
 
     Process findById(Long id);
 
