@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -148,6 +149,29 @@ public class ProcessController {
             return ResponseEntity.badRequest().body("Invalid process ID.");
         } catch (JsonProcessingException | TransactionSystemException e) {
             return ResponseEntity.badRequest().body("Invalid process comment.");
+        }
+    }
+
+    @PreAuthorize("@jwtHandler.isValidToken(#request.getHeader('Authorization'))")
+    @DeleteMapping("/{processId}/comments/{commentId}/delete")
+    public ResponseEntity<String> deleteComment(@PathVariable String processId, HttpServletRequest request,
+                                                @PathVariable String commentId) {
+
+        try {
+            ProcessComment comment = commentRepository.findById(Long.parseLong(commentId));
+            User author = comment.getAuthor();
+            User requestSender = getUser(request);
+
+            if (!author.getId().equals(requestSender.getId()) && !requestSender.isAdmin()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this comment.");
+            }
+
+            commentRepository.deleteById(comment.getId());
+            return ResponseEntity.ok("Comment deleted.");
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid process ID.");
+        } catch (TransactionSystemException e) {
+            return ResponseEntity.badRequest().body("Failed to delete the comment.");
         }
     }
 

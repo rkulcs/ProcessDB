@@ -13,7 +13,7 @@ public interface ProcessCommentRepository extends Repository<ProcessComment, Lon
 
     ProcessComment save(ProcessComment comment);
 
-    Process findById(Long id);
+    ProcessComment findById(Long id);
 
     @Modifying
     Long deleteById(Long id);
