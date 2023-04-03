@@ -22,6 +22,13 @@
           </button>
         </div>
       </div>
+      <div class="notification is-light">
+        <h2 class="title">Comments</h2>
+        <div class="notification is-white" v-for="comment in process.comments">
+          <strong>{{ comment.author }}</strong> - {{ comment.dateWritten }} [{{ comment.safe ? "Safe" : "Not safe" }}]<br>
+          {{ comment.info }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +50,7 @@ export default {
     }
   },
 
-  async mounted() {
+  async created() {
     this.process = await this.store.get(this.$route.params.id)
   },
 
