@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import processdb.backend.users.User;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "processComments")
 public class ProcessComment {
@@ -12,6 +14,9 @@ public class ProcessComment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @Temporal(TemporalType.DATE)
+    private Date dateWritten;
 
     @ManyToOne
     private User author;
@@ -31,6 +36,7 @@ public class ProcessComment {
 
         this.isSafe = isSafe;
         this.info = info;
+        this.dateWritten = new Date();
     }
 
     public ProcessComment(Process process, Boolean isSafe, String info) {
@@ -38,6 +44,7 @@ public class ProcessComment {
         this.process = process;
         this.isSafe = isSafe;
         this.info = info;
+        this.dateWritten = new Date();
     }
 
     public Long getId() {
@@ -46,6 +53,14 @@ public class ProcessComment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Date getDateWritten() {
+        return dateWritten;
+    }
+
+    public void setDateWritten(Date dateWritten) {
+        this.dateWritten = dateWritten;
     }
 
     public User getAuthor() {
@@ -83,8 +98,8 @@ public class ProcessComment {
     //===== Serialization Getters =====//
 
     @JsonProperty("author")
-    public Long getAuthorId() {
-        return author.getId();
+    public String getAuthorId() {
+        return author.getUsername();
     }
 
     @JsonProperty("process")

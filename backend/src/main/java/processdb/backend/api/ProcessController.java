@@ -17,6 +17,7 @@ import processdb.backend.processes.ProcessCommentRepository;
 import processdb.backend.processes.ProcessRepository;
 import processdb.backend.users.User;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -142,6 +143,7 @@ public class ProcessController {
             ProcessComment comment = objectMapper.readValue(commentJSON, ProcessComment.class);
             comment.setAuthor(getUser(request));
             comment.setProcess(processRepository.findById(Long.parseLong(id)));
+            comment.setDateWritten(new Date());
             commentRepository.save(comment);
 
             return ResponseEntity.ok("Comment added.");
