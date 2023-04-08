@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       isUserLoggedIn: (UserUtils.getLoggedInUser() !== null),
-      user: UserUtils.getUserToken()
+      user: UserUtils.getLoggedInUser()
     }
   },
 
