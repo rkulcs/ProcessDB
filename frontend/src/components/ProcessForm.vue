@@ -29,7 +29,7 @@
       <button class="button is-link" @click="save">
         {{ isNew() ? 'Add' : 'Update' }}
       </button>
-      <button class="button is-link back-button" @click="save">
+      <button class="button is-link back-button" @click="returnToPreviousPage">
         Back
       </button>
     </div>
@@ -66,6 +66,10 @@ export default {
     },
     save() {
       this.$emit('formFilled', this.process)
+    },
+    returnToPreviousPage() {
+      this.isNew() ? this.$router.push({ name: 'process_list' }) 
+                   : this.$router.push({ name: 'process_info', params: { id: this.id } }) 
     }
   }
 }
