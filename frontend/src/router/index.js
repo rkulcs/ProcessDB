@@ -12,6 +12,7 @@ import ProcessList from '../components/ProcessList.vue'
 import ProcessInfo from '../components/ProcessInfo.vue'
 import ProcessNew from '../components/ProcessNew.vue'
 import ProcessEdit from '../components/ProcessEdit.vue'
+import ProcessCommentForm from '../components/ProcessCommentForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -66,6 +67,11 @@ const router = createRouter({
           name: 'process_edit',
           props: {'type': ProcessFormType.EDIT},
           component: ProcessEdit
+        },
+        {
+          path: ':id/comments/new',
+          name: 'process_comment_new',
+          component: ProcessCommentForm
         }
       ]
     }

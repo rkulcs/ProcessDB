@@ -24,6 +24,10 @@
       </div>
       <div class="notification is-light">
         <h2 class="title">Comments</h2>
+        <RouterLink class="button is-link" :to="`/processes/${ id }/comments/new`">
+          Add Comment
+        </RouterLink>
+        <br/><br/>
         <div class="notification is-white" v-for="comment in process.comments">
           <strong>{{ comment.author }}</strong> - {{ comment.dateWritten }} [{{ comment.safe ? "Safe" : "Not safe" }}]<br>
           {{ comment.info }}

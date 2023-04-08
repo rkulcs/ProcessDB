@@ -11,8 +11,15 @@ export class Comment {
     this.info = info
   }
 
+  toSimplifiedJSON() {
+    return {
+      "safe": this.safe,
+      "info": this.info
+    }
+  }
+
   static emptyComment() {
-    return Comment('', '', '', '')
+    return new Comment('', '', true, '')
   }
 
   static objectToComment(jsonObject) {
