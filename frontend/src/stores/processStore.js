@@ -90,7 +90,7 @@ export const processStore = defineStore('processes', {
           'Access-Control-Allow-Origin': '*',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        data: comment.toSimplifiedJSON()
+        data: comment
       })
       .then(true)
       .catch(false)

@@ -31,9 +31,14 @@ export class Process {
     let numSafe = this.comments.filter(comment => comment.safe).length
     let numUnsafe = this.comments.length - numSafe
 
+    let safePercentage = (numSafe / this.comments.length) * 100
+    let unsafePercentage = (numUnsafe / this.comments.length) * 100
+
     return {
-      safePercentage: (numSafe / this.comments.length) * 100,
-      unsafePercentage: (numUnsafe / this.comments.length) * 100
+      safePercentage: isNaN(safePercentage) ? 'N/A' 
+                                            : `${safePercentage.toPrecision(3)}%`,
+      unsafePercentage: isNaN(unsafePercentage) ? 'N/A' 
+                                                : `${unsafePercentage.toPrecision(3)}%`
     }
   }
 

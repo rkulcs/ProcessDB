@@ -1,16 +1,35 @@
 <template>
   <div class="container is-fluid">
     <div class="notification is-primary">
-      <h1 class="title process-name">{{ process.name }} ({{ process.filename }})</h1>
+      <h1 class="title process-name">
+        {{ process.name }} ({{ process.filename }})
+        <span class="tag is-success" v-if="parseFloat(processClassification.safePercentage) >= 70">
+          Safe
+        </span>
+        <span class="tag is-danger" v-else-if="parseFloat(processClassification.unsafePercentage) >= 70">
+          Unsafe
+        </span>
+        <span class="tag is-warning" v-else>
+          Unknown
+        </span>
+      </h1>
       <div class="notification is-light">
         <p><strong>Name:</strong> {{ process.name }}</p>
         <p><strong>Filename:</strong> {{ process.filename }}</p>
         <p><strong>Operating System:</strong> {{ process.os }}</p>
+        <p>
+          <strong>Percentage of Safe Classifications:</strong>
+          {{ processClassification.safePercentage }}
+        </p>
+        <p>
+          <strong>Percentage of Unsafe Classifications:</strong>
+          {{ processClassification.unsafePercentage }}
+        </p>
         <br>
         <div class="notification is-white">
           {{ 
-            (process.description === '') ? 'No description available.' 
-                                         : process.description 
+            (process.description === '' || process.description === null) ? 'No description available.' 
+                                                                         : process.description 
           }}
         </div>
         <div v-if="isUserLoggedIn">
@@ -50,12 +69,14 @@ export default {
     return {
       id: this.$route.params.id,
       store: processStore(),
-      process: Process.emptyProcess()
+      process: Process.emptyProcess(),
+      processClassification: ''
     }
   },
 
   async created() {
     this.process = await this.store.get(this.$route.params.id)
+    this.processClassification = this.process.getClassification()
   },
 
   methods: {
