@@ -16,7 +16,7 @@ export class Process {
   }
 
   static emptyProcess() {
-    return new Process('', '', '', '', '', '')
+    return new Process('', '', '', '', '', null)
   }
 
   static objectToProcess(jsonObject) {
@@ -25,6 +25,16 @@ export class Process {
         jsonObject.filename, jsonObject.os, 
         jsonObject.description, jsonObject.comments
       )
+  }
+
+  getClassification() {
+    let numSafe = this.comments.filter(comment => comment.safe).length
+    let numUnsafe = this.comments.length - numSafe
+
+    return {
+      safePercentage: (numSafe / this.comments.length) * 100,
+      unsafePercentage: (numUnsafe / this.comments.length) * 100
+    }
   }
 
   copyJsonValues(jsonObject) {
